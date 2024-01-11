@@ -23,17 +23,17 @@ for /f "tokens=*" %%a in ('dir /b "C:\Users\x\x\x"') do set asdf=%%a.txt
 echo ##############################################[whoami] config result############################################## > %asdf%.txt
 whoami >> %asdf%.txt
 
-echo ##############################################[ipconfig] config result############################################## > %asdf%.txt
+echo ##############################################[ipconfig] config result############################################## >> %asdf%.txt
 ipconfig >> %asdf%.txt
 
-echo ##############################################[net share] config result############################################## > %asdf%.txt
+echo ##############################################[net share] config result############################################## >> %asdf%.txt
 net share >> %asdf%.txt
 
-echo ##############################################[net user ~~] config result############################################## > %asdf%.txt
+echo ##############################################[net user ~~] config result############################################## >> %asdf%.txt
 for /f "tokens=2 delims=^\" %%a in ('whoami') do set pc_name=%%a
 net user %pc_name >> %asdf%.txt
 
-echo ##############################################[NTP CHECK]############################################## > %asdf%.txt
+echo ##############################################[NTP CHECK]############################################## >> %asdf%.txt
 net start w32time
 
 :: 재부팅 시 w32time(ntp service) 자동 시작되도록 등록
@@ -43,11 +43,11 @@ sc config w32time start=auto
 w32tm /config /manualpeerlist:x.x.x.x,0x9 /syncfromflags:manual /reliable:yes /update
 
 ::NTP 관련 레지스트리값 parameter 설정
-red add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\SErvices\W32Time\TimeProviders\NtpClient" /v "Enabled" /t REG_DWORD \d 1 \f
-red add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\SErvices\W32Time\TimeProviders\NtpServer" /v "Enabled" /t REG_DWORD \d 1 \f
-red add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\SErvices\W32Time\Config" /v "AnnounceFlags" /t REG_DWORD /d 10 /f
-red add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\SErvices\W32Time\TimeProviders\NtpClient" /v "SpecialPollIntervar" /t REG_DWORD /d 1024 /f
-red add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\SErvices\W32Time\Config" /v MAxPosPhaseCorrection \t REG_DWORD \d 3600 \f
+reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\SErvices\W32Time\TimeProviders\NtpClient" /v "Enabled" /t REG_DWORD \d 1 \f
+reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\SErvices\W32Time\TimeProviders\NtpServer" /v "Enabled" /t REG_DWORD \d 1 \f
+reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\SErvices\W32Time\Config" /v "AnnounceFlags" /t REG_DWORD /d 10 /f
+reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\SErvices\W32Time\TimeProviders\NtpClient" /v "SpecialPollIntervar" /t REG_DWORD /d 1024 /f
+reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\SErvices\W32Time\Config" /v MAxPosPhaseCorrection \t REG_DWORD \d 3600 \f
 
 ::윈도우 방화벽 udp 123(ntp) open
 netsh advfirewall firewall add rule name="NTP Server" protocol=UDP dir=in localport=123 action=allow enable=yes
@@ -58,10 +58,10 @@ w32tm /config /update
 :: ntp 서비스 재기동
 net stop w32time && net start w32time
 
-echo ##############################################[Windows Update Check]############################################## > %asdf%.txt
+echo ##############################################[Windows Update Check]############################################## >> %asdf%.txt
 wmic qfe >> %asdf%.txt
 
-echo ##############################################[Local Security Policy check]############################################## > %asdf%.txt
+echo ##############################################[Local Security Policy check]############################################## >> %asdf%.txt
 secedit /export /cfg secpol.txt > nul
 
 type secpol.txt | findstr /bic:"MinimumPasswordAge" >> %asdf%.txt
