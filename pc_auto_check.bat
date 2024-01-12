@@ -17,6 +17,9 @@
 
 @echo off
 
+:: 한글이 있으면 unicode 깨져서 영어로 변환
+chcp 437 
+
 :: 생성되는 결과파일 이름을 특정 경로에 있는 파일명으로 지정(사용자 PC 식별 위함)
 for /f "tokens=*" %%a in ('dir /b "C:\Users\x\x\x"') do set asdf=%%a.txt
 
@@ -71,6 +74,9 @@ type secpol.txt | findstr /bic:"PasswordComplexity" >> %asdf%.txt
 type secpol.txt | findstr /bic:"PasswordHistorySize" >> %asdf%.txt
 :: 해독 가능한 암호화를 사용하여 암호 저장 옵션 / 0(사용 안함)이 권장
 type secpol.txt | findstr /bic:"ClearTextPassword" >> %asdf%.txt
+
+:: 공유폴더 경로에 한글이 껴있을 경우를 방지하기 위해 다시 한글화
+chcp 949
 
 :: 공유폴더에 파일을 copy함
 copy %asdf%.txt \\x.x.x.x\xxxx\xxxx
