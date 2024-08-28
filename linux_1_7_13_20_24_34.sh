@@ -12,7 +12,7 @@ if [ "`id | grep \"uid=0\"`" = "" ]; then
     echo "";
     exit 1;
 fi
-lang_check=`locale -a 2>/dev/null | grep "en_US" | egrep -i "(utf8|utf-8)"`
+lang_check=`locale -a 2>/dev/null | grep "en_US" | grep -i "(utf8|utf-8)"`
 if [ "$lang_check" = "" ]; then
     lang_check="C"
 fi
